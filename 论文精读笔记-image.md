@@ -379,7 +379,7 @@ google 的一篇论文，diffusion beat GAN
 1. 只需要预测真实噪声和预测噪声之间的差值，有点 ResNet 的思想（以前都是直接预测这一步到下一步的噪声）
 2. 预测噪声，就是预测一个正态分布（假设加的都是正态分布的噪声），预测分布就是预测均值和方差。DDPM 发现预测一个分布，甚至不用预测方差，将方差设置为一个常数，效果就已经很好了。
 
-如今生成扩散模型的大火，则是始于 2020 年所提出的 [DDPM论文](https://papers.cool/arxiv/2006.11239)（Denoising Diffusion Probabilistic Model），虽然也用了“扩散模型”这个名字，但事实上除了采样过程的形式有一定的相似之外，DDPM 与传统基于朗之万方程采样的扩散模型可以说完全不一样，这完全是一个新的起点、新的篇章。
+如今生成扩散模型的大火，则是始于 2020 年所提出的 [DDPM 论文](https://papers.cool/arxiv/2006.11239)（Denoising Diffusion Probabilistic Model），虽然也用了“扩散模型”这个名字，但事实上除了采样过程的形式有一定的相似之外，DDPM 与传统基于朗之万方程采样的扩散模型可以说完全不一样，这完全是一个新的起点、新的篇章。
 
 
 
@@ -405,7 +405,7 @@ LDM 的贡献：
 
 条件注入 stabel diffusion（是 LDM 的续作，stabel diffusion 并没有单独的论文，借鉴了谷歌的 Imagen）
 
-为什么叫stabel ，压缩到隐空间进行扩散为什么更加稳定，隐空间不是包含了更多的压缩信息，
+为什么叫 stabel ，压缩到隐空间进行扩散为什么更加稳定，隐空间不是包含了更多的压缩信息，
 
 
 
@@ -433,11 +433,11 @@ VAE 就是一个类 Unet，Unet 就是最简单的编码器，瓶颈，解码器
 
 [[1711.00937\] Neural Discrete Representation Learning](https://arxiv.org/abs/1711.00937)
 
-引入了一个codebook，来保存一些有代表性的向量，将encode出来的特征图中的每一个向量，与codebook中的向量求距离，用距离最近的codebook向量来“代表”特征图中的向量。
+引入了一个 codebook，来保存一些有代表性的向量，将 encode 出来的特征图中的每一个向量，与 codebook 中的向量求距离，用距离最近的 codebook 向量来“代表”特征图中的向量。
 
-又把VAE所生成的连续的分布，变成离散的了，为什么？
+又把 VAE 所生成的连续的分布，变成离散的了，为什么？
 
-并且这个codebook中的向量怎么初始化？（类似于聚类方法中，取样本点作为初始点？）
+并且这个 codebook 中的向量怎么初始化？（类似于聚类方法中，取样本点作为初始点？）
 
 
 
@@ -460,3 +460,103 @@ VAE 就是一个类 Unet，Unet 就是最简单的编码器，瓶颈，解码器
 
 
 问： 在图像中，encoder 最终会把图像压缩成一个高维向量，那我想知道，给定一个数据规模，我用多少维度的向量最合适，（就是不至于表征能力不够，但也不至于发生维度灾难）
+
+
+
+
+
+
+
+
+
+## Delphi
+
+论文地址：[[2406.01349\] Unleashing Generalization of End-to-End Autonomous Driving with Controllable Long Video Generation](https://arxiv.org/abs/2406.01349)
+
+项目主页：[Unleashing Generalization of End-to-End Autonomous Driving with Controllable Long Video Generation](https://westlake-autolab.github.io/delphi.github.io/)
+
+摘要：
+
+使用生成模型合成新数据已成为自动驾驶解决数据稀缺问题的事实标准。尽管现有方法能够提升感知模型，但我们发现这些方法无法提高端到端自动驾驶模型的规划性能，因为生成的视频通常小于 8 帧，并且空间和时间的不一致不可忽略。为此，我们提出了 *Delphi*，一种新颖的基于扩散的长视频生成方法，具有 **跨多视图的共享噪声建模机制**，以提高空间一致性，以及一个 **特征对齐模块**，以实现精确可控性和时间一致性。我们的方法可以生成多达 40 帧的视频而不会失去一致性，与最先进的方法相比，这大约是 5 倍。我们不是随机生成新数据，而是进一步 **设计了一个抽样策略，让 *Delphi* 生成与那些失败情况类似的新数据，以提高抽样效率**。这是通过在预先训练的视觉语言模型的帮助下构建失败案例驱动的框架来实现的。我们广泛的实验表明，我们的 *Delphi* 生成的长视频质量超过了以前最先进的方法。因此，仅生成 4% 的训练数据集大小，我们的框架就能够超越感知和预测任务，据我们所知，首次将端到端自动驾驶模型的规划性能提高了 25%。
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028201712319.png" alt="image-20241028201712319" style="zoom:80%;" />
+
+#### 1. 跨多视图的共享噪声
+
+- 发现问题：过短的视频生成，对 end-to-end 的提升不大，之前方法只能在保持空间和时间一致性的前提下生成 8 帧，而 Delphi 可以生成 40 帧。
+
+![MY ALT TEXT](https://westlake-autolab.github.io/delphi.github.io/static/images/delphi-framework-small.png)
+
+m：一个应用于一个 camera view 的所有帧的噪声，不变。
+
+p：应用于同一帧的所有视图，随着帧数 n 的改变而改变。
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028195349360.png" alt="image-20241028195349360" style="zoom: 67%;" />
+
+
+
+#### 2. 特征对齐
+
+- 发现问题：之前的方法只是简单的对 previous frames 做 cross attention ，并没有考虑到位于不同网络深度的特征的感受野不一样。导致空间和时间的一致性不好。
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028202406809.png" alt="image-20241028202406809" style="zoom:67%;" />
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028203530481.png" alt="image-20241028203530481" style="zoom:67%;" />
+
+
+
+#### 3. 针对失败案例的抽样策略
+
+- 发现问题：以前的方法都是从数据集里面随机抽样，但是数据是长尾分布的，对于 corner case （那个尾巴）的针对性优化非常重要，并且针对端到端模型做得不好的 case 来优化，才能减少计算成本。
+
+![MY ALT TEXT](https://westlake-autolab.github.io/delphi.github.io/static/images/failure-case-driven%20framwork.jpeg)
+
+#### 限制、缺点：
+
+1. 只能改变外观，不能改变布局 layout
+2. 当 end-to-end model 在训练集上表现很好的时候，失败案例抽样策略失效。
+
+
+
+
+
+## SimGen（NeurlPS 2024）
+
+论文地址：[arxiv.org/pdf/2406.09386](https://arxiv.org/pdf/2406.09386)
+
+项目地址：[GitHub - metadriverse/SimGen: Simulator-conditioned Driving Scene Generation](https://github.com/metadriverse/SimGen)
+
+摘要：
+
+可控的合成数据生成可以大大降低自动驾驶研发中训练数据的标注成本。以前的作品使用扩散模型来生成以 3D 对象布局为条件的驾驶图像。但是，这些模型是在 nuScenes 等小规模数据集上训练的，这些数据集缺乏外观和布局多样性。此外，经过训练的模型只能根据来自同一数据集验证集的真实布局数据生成图像，其中可能会发生过拟合。在这项工作中，我们介绍了一个名为 SimGen 的模拟器条件场景生成框架，该框架可以通过 **混合来自模拟器和现实世界的数据来学习** 生成多样化的驾驶场景。它使用一种新颖的 **级联扩散管道** 来解决具有挑战性的 **模拟到真实差距** 和 **多条件冲突**。**收集驾驶视频数据集 DIVA** 是为了增强 SimGen 的生成多样性，其中包含来自全球 73 个地点的超过 147.5 小时的真实驾驶视频和来自 MetaDrive 模拟器的模拟驾驶数据。SimGen 实现了卓越的生成质量和多样性，同时保留了基于文本提示和从仿真器中提取的布局的可控性。我们进一步展示了 SimGen 为 BEV 检测和分割任务的合成数据增强带来的改进，并展示了其在安全关键数据生成方面的能力。将提供代码、数据和模型。
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028204959818.png" alt="image-20241028204959818" style="zoom:80%;" />
+
+
+
+#### 1. 数据集 DIVA
+
+发现问题：现有的模型，第一，因为只使用了 nusence 这种相对比较小的数据集，导致背景和车的外观比较单一。第二，只能改变外观，不能改变布局。
+ method：
+ 针对第一点，收集了一个数据集。
+ 分为两个部分：
+
+- 一部分是 DiVA-real，这部分是从 YouTube 上收集的各种驾驶视屏，包含了非常多样的道路布局，天气，交通元素， 环境等。（解决 appearance diversity 的问题）
+-  另一部分是 DIVA-sim，这部分是由模拟器生成的，模拟器用的是 Metadrive，理论上提供地图信息，模拟器就可以根据预先定义的规则和交互式的策略，来生成任何驾驶场景的数字孪生。 模拟器根据真实世界的数据，生成数字孪生，用来 train Cond diff，用于弥补模拟数据和真实世界数据的细节上的差异。然后还可以生成真实世界没有的 layout，还有一些危险驾驶的数据案例。
+- <img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028205129605.png" alt="image-20241028205129605" style="zoom: 67%;" />
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028205042948.png" alt="image-20241028205042948" style="zoom:67%;" />
+
+#### 2. 级联扩散 pipeline
+
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20241028205235409.png" alt="image-20241028205235409" style="zoom: 80%;" />
+
+
+
+
+
+#### 思考：
+
+ 其实 SimGen 也还没有做到真正的闭环，目前的模型貌似也还远没有做到，都是增强训练集。
+
+ 如果说，可以把 SimGen 做到视屏生成四十多帧的话，就相当于打破了 layout 的这个限制，模型可以在虚拟世界里面不断的自我迭代（离线训练），并且可以一直不断的去训练那些关键安全驾驶场景。这样就完全弥补了数据上的缺陷。
